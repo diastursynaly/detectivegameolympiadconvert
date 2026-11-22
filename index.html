@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>«Олимпиада конверті» ісі</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&family=PT+Mono&family=PT+Sans:wght@400;700&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: тергеушінің үстелі. Жасыл мата үстінде папка, ішінде қағаз құжаттар; оқушының жазуы көк сиямен */
+  --desk:#22332f; --folder:#d6b36f; --paper:#f4f1e8; --ink:#1b1b1f; --muted:#5f5a50; --line:#cfc8b6;
+  --stamp:#b3261e; --pen:#1d3f9c; --ok:#2a6a3f;
+  --serif:"PT Serif",Georgia,serif; --mono:"PT Mono",ui-monospace,Menlo,Consolas,monospace;
+  --ui:"PT Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --hand:"Caveat","Segoe Script",cursive;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--desk);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.55}
+.wrap{max-width:740px;margin:0 auto;padding:0 16px 64px;display:flex;flex-direction:column;gap:16px}
+.top{position:sticky;top:0;z-index:5;margin:0 -16px;background:var(--desk);padding-top:6px}
+.credit{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--folder);text-align:center;padding:0 16px 6px}
+header.bar{background:var(--folder);color:var(--ink);padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-radius:10px 10px 0 0;margin:0 8px}
+.bar .case{font-family:var(--mono);font-size:13px;letter-spacing:.06em;flex:1;min-width:110px}
+.bar .stat{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:15px}
+.bar .stat small{font-size:11px;margin-right:4px;opacity:.75}
+.bar .late{color:var(--stamp);font-weight:700}
+nav.tabs{display:none;background:var(--paper);margin:0 8px;border-bottom:1px solid var(--line)}
+nav.tabs.on{display:flex}
+nav.tabs button{flex:1;background:none;border:0;border-bottom:3px solid transparent;padding:10px 2px;font-weight:700;font-size:14px;color:var(--muted)}
+nav.tabs button[aria-current="true"]{color:var(--ink);border-bottom-color:var(--stamp)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+.refbtn{background:var(--ink);color:var(--paper);border:0;border-radius:3px;padding:6px 10px;font-weight:700;font-size:14px}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(30px,8vw,48px);line-height:1.1;margin:24px 0 0;color:var(--paper);text-wrap:balance}
+h2{font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.25;margin:0;text-wrap:balance}
+h3{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0;font-weight:400}
+p{margin:0}
+.lead{font-size:17px;color:var(--paper)}
+.hintline{font-family:var(--mono);font-size:12px;color:var(--folder)}
+.sheet{background:var(--paper);border-radius:2px;padding:20px 18px;display:flex;flex-direction:column;gap:14px;box-shadow:0 2px 0 rgba(0,0,0,.25),0 10px 24px rgba(0,0,0,.25)}
+.sheet.typed{font-family:var(--mono);font-size:14.5px;line-height:1.65}
+.dochead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-bottom:2px solid var(--ink);padding-bottom:10px}
+.dochead .tag{font-family:var(--mono);font-size:12px;letter-spacing:.12em}
+.stamp{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--stamp);border:2px solid var(--stamp);padding:2px 6px;transform:rotate(-5deg);white-space:nowrap;flex:none}
+.group{display:flex;flex-direction:column;gap:6px}
+.item{display:flex;gap:12px;align-items:center;text-align:left;background:var(--paper);border:0;border-left:6px solid var(--folder);border-radius:2px;padding:10px 12px;width:100%}
+.item:hover{border-left-color:var(--stamp)}
+.item .no{font-family:var(--mono);font-size:13px;color:var(--muted);flex:none;width:28px}
+.item .tx{flex:1;min-width:0}
+.item b{display:block;font-family:var(--serif)}
+.item small{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.pill{font-family:var(--hand);font-size:18px;font-weight:700;color:var(--pen);white-space:nowrap}
+.pill.none{font-family:var(--mono);font-size:11px;font-weight:400;color:var(--muted)}
+.pill.bad{font-family:var(--mono);font-size:11px;color:var(--stamp);border:1.5px solid var(--stamp);padding:1px 5px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:6px 10px 6px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:400}
+td.n,.n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+td.n{white-space:nowrap}
+.eq{font-family:var(--mono);border:1px dashed var(--muted);padding:8px 12px;font-size:15px;overflow-x:auto;white-space:nowrap}
+.note{font-family:var(--hand);font-size:22px;line-height:1.3;background:#fff;padding:12px 14px;transform:rotate(-.8deg);box-shadow:0 2px 6px rgba(0,0,0,.2);overflow-wrap:anywhere}
+.photo{background:#fff;padding:10px 10px 8px;box-shadow:0 2px 8px rgba(0,0,0,.3);transform:rotate(-1deg);align-self:center;max-width:100%;display:flex;flex-direction:column;gap:6px}
+.photo svg{display:block;max-width:100%;height:auto;background:#2b2f33}
+.photo figcaption{font-family:var(--hand);font-size:18px;color:var(--ink);line-height:1.2}
+figure{margin:0}
+.task{border:2px solid var(--pen);border-radius:2px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.task h3{color:var(--pen)}
+.q{font-family:var(--serif);font-weight:700;font-size:17px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opts button{background:#fff;border:1.5px solid var(--ink);border-radius:2px;padding:10px 14px;text-align:left}
+.opts button[aria-pressed="true"]{background:var(--pen);color:#fff;border-color:var(--pen)}
+.numrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input[type=text],textarea{font:inherit;background:#fff;color:var(--pen);border:0;border-bottom:2px solid var(--pen);border-radius:0;padding:8px 6px;font-family:var(--hand);font-size:22px;font-weight:700}
+input.num{width:140px}
+textarea{width:100%;min-height:76px;resize:vertical;line-height:1.3;background:repeating-linear-gradient(#fff,#fff 27px,var(--line) 28px)}
+.go{background:var(--stamp);color:#fff;border:0;border-radius:2px;padding:12px 18px;font-weight:700}
+.go.big{font-family:var(--serif);font-size:18px;padding:14px 22px;align-self:flex-start}
+.go:disabled{opacity:.4;cursor:default}
+.ghost{background:var(--paper);border:1.5px solid var(--ink);border-radius:2px;padding:8px 12px;font-weight:700;font-size:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between}
+.fb{border-left:4px solid var(--stamp);padding:8px 12px;background:#fff;font-size:15px}
+.fb.ok{border-color:var(--ok)}
+.fb.tip{border-color:var(--pen)}
+.fb b{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;display:block;font-weight:400}
+.sol{font-family:var(--mono);font-size:14px;line-height:1.7}
+ul,ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
+.qa{display:flex;flex-direction:column;gap:10px}
+.qa p.t{color:var(--muted)}
+.qa p.a{padding-left:16px;border-left:3px solid var(--line)}
+.who{position:relative}
+.who.out h2{text-decoration:line-through;opacity:.55}
+.who.out::after,.who.hot::after{position:absolute;right:14px;top:16px;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.06em;border:2px solid;padding:1px 5px;transform:rotate(-6deg);background:var(--paper)}
+.who.out::after{content:"АҚТАЛДЫ";color:var(--ok)}
+.who.hot::after{content:"КҮДІКТІ";color:var(--stamp)}
+.seg{display:flex}
+.seg button{flex:1;background:#fff;border:1.5px solid var(--ink);padding:6px 4px;font-size:13px;font-weight:700;margin-left:-1.5px}
+.seg button:first-child{margin-left:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.res{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.res div{border-top:3px solid var(--ink);padding-top:8px}
+.res small{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block}
+.res span{font-family:var(--serif);font-weight:700;font-size:26px;font-variant-numeric:tabular-nums}
+.verdict{font-family:var(--mono);font-weight:700;color:var(--stamp);border:3px solid var(--stamp);padding:6px 12px;transform:rotate(-2deg);align-self:flex-start;letter-spacing:.04em}
+#ref{position:fixed;inset:0;z-index:10;background:rgba(10,16,14,.7);display:none;align-items:flex-end;justify-content:center}
+#ref.open{display:flex}
+#ref .panel{background:var(--paper);width:100%;max-width:740px;max-height:88%;overflow-y:auto;padding:20px;border-radius:8px 8px 0 0;display:flex;flex-direction:column;gap:14px}
+#ref .hd{display:flex;justify-content:space-between;align-items:center;gap:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="credit">Ойынды құрастырған Dias Sempai</div>
+    <header class="bar">
+      <span class="case">ІС № 214-Х</span>
+      <span class="stat"><small>УАҚЫТ</small><span id="timer">45:00</span></span>
+      <span class="stat"><small>ЕСЕП</small><span id="cnt">0/7</span></span>
+      <button class="refbtn" id="openRef" type="button">Анықтама</button>
+    </header>
+    <nav class="tabs" id="tabs">
+      <button type="button" data-go="docs">Материалдар</button>
+      <button type="button" data-go="ints">Жауап алу</button>
+      <button type="button" data-go="note">Дәптер</button>
+      <button type="button" data-go="acc">Айыптау</button>
+    </nav>
+  </div>
+  <main id="app" class="wrap" style="padding:0"></main>
+</div>
+
+<div id="ref" role="dialog" aria-modal="true" aria-labelledby="refT">
+  <div class="panel">
+    <div class="hd"><h2 id="refT">Анықтамалық</h2><button class="ghost" id="closeRef" type="button">Жабу</button></div>
+    <h3>Салыстырмалы атомдық массалар</h3>
+    <div class="tw"><table><tr><td class="n">H 1</td><td class="n">O 16</td><td class="n">Na 23</td><td class="n">Mg 24</td><td class="n">Al 27</td><td class="n">S 32</td><td class="n">Cl 35,5</td></tr>
+    <tr><td class="n">K 39</td><td class="n">Ca 40</td><td class="n">Fe 56</td><td class="n">Cu 64</td><td class="n">Zn 65</td><td class="n">Ag 108</td><td></td></tr></table></div>
+    <h3>Формулалар</h3>
+    <div class="sol">
+      n = m / M &nbsp;·&nbsp; n = V / 22,4 (газ, қ.ж.)<br>
+      Реттік нөмір = протон саны = атомдағы электрон саны<br>
+      Нейтрон саны = масса саны − протон саны<br>
+      Ион заряды = протон саны − электрон саны<br>
+      Жылу мөлшері: теңдеудегі Q қай зат мөлшеріне жазылғанына қара (коэффициент)
+    </div>
+    <h3>Электрондық деңгейшелердің толу реті</h3>
+    <div class="sol">1s → 2s → 2p → 3s → 3p → 4s (s-те 2 электрон, p-да 6 электрон)</div>
+    <h3>Реакция түрлері</h3>
+    <ul><li>Қосылу: бірнеше заттан бір күрделі зат.</li><li>Айырылу: бір күрделі заттан бірнеше зат.</li><li>Орынбасу: жай зат күрделі заттағы бір элементтің орнын басады.</li><li>Алмасу: екі күрделі зат құрамдас бөліктерімен алмасады.</li></ul>
+    <h3>Металдардың белсенділік қатары</h3>
+    <div class="sol">K Ca Na Mg Al Zn Fe Pb (H) Cu Hg Ag Au</div>
+    <ul><li>Сутектің сол жағындағы металдар қышқылдан сутекті ығыстырады.</li><li>Белсенді металл белсенділігі төмен металды оның тұзынан ығыстырады.</li></ul>
+  </div>
+</div>
+
+<script>
+const SUS=[
+ {id:'gulnar',name:'Диас',full:'Диас Қайратұлы',role:'химия мұғалімі'},
+ {id:'askar',name:'Асқар',full:'Асқар Серікұлы',role:'лаборант'},
+ {id:'bekbolat',name:'Бекболат',full:'Бекболат ата',role:'түнгі күзетші'},
+ {id:'saule',name:'Сәуле',full:'Сәуле апай',role:'тазалықшы'},
+ {id:'timur',name:'Тимур',full:'Тимур Ерланұлы',role:'10-сынып оқушысы, олимпиадашы'},
+ {id:'aruzhan',name:'Аружан',full:'Аружан Сапарқызы',role:'9-сынып оқушысы, олимпиадашы'}
+];
+const OPENER='askar',THIEF='timur',LIMIT=2700;
+
+const svgScene=`<svg viewBox="0 0 320 200" width="320" height="200" role="img" aria-label="214-кабинеттің фотосы, бес белгі қойылған">
+<rect x="0" y="0" width="320" height="130" fill="#3d464c"/><rect x="0" y="130" width="320" height="70" fill="#4a3526"/>
+<rect x="20" y="100" width="190" height="10" fill="#6d4c33"/><rect x="28" y="110" width="8" height="60" fill="#5a3d28"/><rect x="194" y="110" width="8" height="60" fill="#5a3d28"/>
+<rect x="232" y="62" width="70" height="96" fill="#7d878c" stroke="#c9d3d6" stroke-width="2"/><circle cx="252" cy="110" r="9" fill="none" stroke="#1b1b1f" stroke-width="3"/><rect x="282" y="100" width="12" height="20" fill="#c9d3d6"/>
+<circle cx="70" cy="80" r="16" fill="#a9c8d3" opacity=".8"/><circle cx="70" cy="58" r="11" fill="#a9c8d3" opacity=".8"/><rect x="66" y="30" width="8" height="18" fill="#a9c8d3"/><rect x="56" y="94" width="28" height="6" fill="#a9c8d3"/>
+<path d="M112 98v-34a5 5 0 0 1 10 0v34" fill="#dfe7ea" stroke="#c9d3d6"/><rect x="108" y="96" width="18" height="4" fill="#9aa3a6"/>
+<rect x="146" y="92" width="34" height="8" fill="#f4f1e8" transform="rotate(-6 163 96)"/>
+<path d="M240 176l26-4" stroke="#e8ecee" stroke-width="2.5"/>
+<path d="M10 150h26l-4 34h-18z" fill="#2c3236"/><rect x="16" y="144" width="12" height="9" fill="#f4f1e8" transform="rotate(14 22 148)"/>
+<g font-family="monospace" font-size="12" font-weight="700" fill="#1b1b1f">
+<rect x="12" y="120" width="20" height="18" fill="#f2c230"/><text x="18" y="134">1</text>
+<rect x="276" y="76" width="20" height="18" fill="#f2c230"/><text x="282" y="90">2</text>
+<rect x="152" y="66" width="20" height="18" fill="#f2c230"/><text x="158" y="80">3</text>
+<rect x="268" y="178" width="20" height="18" fill="#f2c230"/><text x="274" y="192">4</text>
+<rect x="86" y="14" width="20" height="18" fill="#f2c230"/><text x="92" y="28">5</text></g></svg>`;
+
+
+const room=(x,y,w,hh,t,hl)=>`<rect x="${x}" y="${y}" width="${w}" height="${hh}" fill="${hl?'#f2c230':'#fff'}" stroke="#1b1b1f" stroke-width="1.2"/><text x="${x+w/2}" y="${y+hh/2+4}" text-anchor="middle">${t}</text>`;
+const cam=(x,y,ok)=>ok?`<circle cx="${x}" cy="${y}" r="5" fill="#b3261e"/>`:`<g stroke="#b3261e" stroke-width="1.6"><circle cx="${x}" cy="${y}" r="5" fill="#fff"/><path d="M${x-3.5} ${y-3.5}l7 7M${x+3.5} ${y-3.5}l-7 7"/></g>`;
+const floor=(y,n,top,bot,cams)=>`<text x="10" y="${y-6}" font-weight="700" font-size="12">${n}-қабат</text><rect x="10" y="${y}" width="340" height="120" fill="#e9e4d8" stroke="#1b1b1f" stroke-width="2"/>`+
+ top.map(r=>room(r[0],y,r[1],46,r[2],r[3])).join('')+bot.map(r=>room(r[0],y+74,r[1],46,r[2],r[3])).join('')+
+ `<text x="180" y="${y+64}" text-anchor="middle" fill="#5f5a50">дәліз</text>`+cams.map(c=>cam(c[0],y+60,c[1])).join('');
+const ST='#cfc8b6';
+const svgPlan=`<svg viewBox="0 0 360 470" width="360" height="470" role="img" aria-label="Мектептің үш қабатының сызбасы" font-family="PT Sans,sans-serif" font-size="10" fill="#1b1b1f" style="background:#f4f1e8">
+${floor(20,3,[[10,44,'арт. б.'],[54,70,'301'],[124,70,'302'],[194,70,'303'],[264,86,'304']],[[10,90,'305'],[100,90,'306'],[190,80,'негізгі баспалд.'],[270,80,'қойма',1]],[[200,1]])}
+${floor(175,2,[[10,44,'арт. б.'],[54,90,'214 химия',1],[144,60,'215'],[204,70,'216'],[274,76,'217']],[[10,90,'201'],[100,90,'202'],[190,80,'негізгі баспалд.'],[270,80,'203']],[[150,0]])}
+${floor(330,1,[[10,44,'арт. б.'],[54,80,'101'],[134,70,'102'],[204,70,'мұғ. бөлмесі',1],[274,76,'105 кабинет',1]],[[10,90,'кітапхана',1],[100,90,'асхана'],[190,80,'негізгі баспалд.'],[270,80,'кіреберіс, пост',1]],[[24,0],[230,1],[300,1]])}
+<rect x="2" y="382" width="10" height="22" fill="#2a6a3f"/><text x="16" y="463" font-size="10">← артқы есік (сол жақ қабырға)</text>
+<rect x="300" y="448" width="40" height="6" fill="#2a6a3f"/><text x="250" y="463" font-size="10">басты есік, турникет ↓</text>
+</svg>`;
+
+const DOCS=[
+{tag:'Хаттама',t:'Оқиға орнын қарау хаттамасы',body:`
+<figure class="photo">${svgScene}<figcaption>214-химия кабинеті. Сенбі, 08:10</figcaption></figure>
+<p>Дүйсенбі күні облыстық химия олимпиадасы өтеді. Жұма күні 17:28-де химия мұғалімі тапсырмалар мен жауаптар салынған мөрлі конвертті 214-кабинеттегі кодты сейфке салды. Сенбі таңертең сейф жабық тұрды, бірақ конверттің мөрі ерітіліп, қайта жабыстырылған, парақтардың реті ауысқан.</p>
+<ol>
+<li>Қоқсауытта жыртылған жазба бар (№ 1 сараптама).</li>
+<li>Сейф тұтқасында ақ кристалдар қалған (№ 2 сараптама).</li>
+<li>Үстелде теңдеулер жазылған қаралама парақ жатыр (№ 3 сараптама).</li>
+<li>Сейфтің астында күміс түсті жіңішке таспаның сынығы жатыр (№ 4 сараптама).</li>
+<li>Кипп аппаратында тұз қышқылы мен мырыштың қалдығы, жанында аузы төмен қаратылған сынауық пен ұшы күйген шыны түтік (№ 5, 6, 7 сараптама).</li>
+</ol>
+<p>Сейф бұзылмаған, кодпен ашылған. Кабинет есігі бұзылмаған. Саусақ іздері табылған жоқ: ұры қолғап киген.</p>`},
+{tag:'Сараптама № 1',t:'Жыртылған жазба',body:`
+<p>Қоқсауыттан табылған жазбаның бір бөлігі. Аты-жөні жазылған жері жыртылып кеткен.</p>
+<div class="note">…бүгін, сол жерде. Уақыт: [1s²2s²2p⁶3s²3p⁶]⁺ : [1s²2s²2p⁶3s²3p⁶]²⁺. Кешікпе, қолғап ұмытпа…</div>
+<p>Сарапшының пікірі: жақшадағы жазбалар — иондардың электрондық конфигурациясы. Әр ион бір санды білдіреді: ол санды атом ядросы береді.</p>`,
+ task:{q:'Жазбада кездесудің қай уақыты көрсетілген? (сағ:мин)',kind:'time',ans:'1920',unit:'',
+ hint:'Екі ионның электрон саны бірдей, бірақ заряды әртүрлі. Ионның заряды оң болса, атомда электрон көп болған. Санды электрон емес, протон береді.',
+ sol:'Әр ионда 18 электрон (аргондікіндей)<br>Заряды +1: протон = 18 + 1 = 19 → K<sup>+</sup><br>Заряды +2: протон = 18 + 2 = 20 → Ca<sup>2+</sup><br>Уақыт: 19:20 («18:18» не «18:20» деген жауап — электрон санымен шатастыру)',
+ concl:'Кездесу 19:20-да. Осы уақытта кабинетте болған адамның 19:20-дан бастап кемінде 20 минуттық алибиі болмауы керек (№ 6 сараптамамен салыстыр).'}},
+{tag:'Сараптама № 2',t:'Сейф тұтқасындағы ақ кристалдар',body:`
+<p>Тұтқадағы кристалдарда тек екі түрлі бөлшек табылды, басқа ион жоқ. Олардың саны 1 : 2 қатынасында.</p>
+<div class="tw"><table><tr><th>Бөлшек</th><th>Протон</th><th>Нейтрон</th><th>Электрон</th></tr>
+<tr><td>X (аз мөлшерде)</td><td class="n">20</td><td class="n">20</td><td class="n">18</td></tr>
+<tr><td>Y (көп мөлшерде)</td><td class="n">17</td><td class="n">18</td><td class="n">18</td></tr></table></div>
+<p>Сарапшы: кристалдар тұтқаға 17:28-ден кейін түскен. Мұғалім конвертті салғанда тұтқа таза болған.</p>`,
+ task:{q:'Тұтқада қандай зат қалған?',kind:'opt',opts:['Калий хлориді KCl','Кальций хлориді CaCl<sub>2</sub>','Хлорлы әк (Ca<sup>2+</sup>, Cl<sup>−</sup> және ClO<sup>−</sup> иондары)','Калий сульфиді K<sub>2</sub>S','Аргон кристалдары','Натрий хлориді NaCl'],ans:1,
+ hint:'Элементті протон саны анықтайды, нейтрон да, электрон да емес. Иондардың зарядтарын тауып, зат электрбейтарап болатындай қатынасты тексер.',
+ sol:'X: 20 протон → Ca; заряды 20 − 18 = +2 → Ca<sup>2+</sup> (катион), масса саны 40<br>Y: 17 протон → Cl; заряды 17 − 18 = −1 → Cl<sup>−</sup> (анион), масса саны 35<br>Ca<sup>2+</sup> : Cl<sup>−</sup> = 1 : 2 → CaCl<sub>2</sub><br>K<sup>+</sup>-та 19 протон; хлорлы әкте үшінші ион бар',
+ concl:'Кальций хлориді. Қол жағындыларында CaCl₂ екі адамда бар: Диас ағай мен Асқарда (екеуі 15:00-де кептіргіш түтіктерді толтырған). Бекболаттағы KCl мен Сәуледегі хлорлы әк — жалған із.'}},
+{tag:'Сараптама № 3',t:'Қаралама парақ',body:`
+<p>Үстелде теңестірілмеген төрт теңдеу жазылған парақ жатыр. Әр теңдеудің жанында реакция түрін жазатын бос орын бар. Парақтың төменгі жағында:</p>
+<div class="note">цифр = коэффициенттер қосындысы (1-лерді де сана). Ретімен.</div>
+<div class="eq">1) Fe(OH)<sub>3</sub> → Fe<sub>2</sub>O<sub>3</sub> + H<sub>2</sub>O &nbsp; ______</div>
+<div class="eq">2) Zn + HCl → ZnCl<sub>2</sub> + H<sub>2</sub> &nbsp; ______</div>
+<div class="eq">3) Al + O<sub>2</sub> → Al<sub>2</sub>O<sub>3</sub> &nbsp; ______</div>
+<div class="eq">4) CuSO<sub>4</sub> + NaOH → Cu(OH)<sub>2</sub> + Na<sub>2</sub>SO<sub>4</sub> &nbsp; ______</div>
+<p>Сейфтің электронды журналында 19:21-де бір рет дұрыс код енгізілгені тіркелген, қате енгізу болмаған.</p>`,
+ task:{q:'Парақта қандай төрт санды код жасырылған?',kind:'num',ans:6595,tol:0,unit:'',
+ hint:'Әр теңдеуді толық теңестір. Al + O₂ теңдеуінде оттек атомдарының санын теңестіру үшін ең кіші ортақ еселік керек.',
+ sol:'2Fe(OH)<sub>3</sub> → Fe<sub>2</sub>O<sub>3</sub> + 3H<sub>2</sub>O (айырылу): 2 + 1 + 3 = 6<br>Zn + 2HCl → ZnCl<sub>2</sub> + H<sub>2</sub> (орынбасу): 1 + 2 + 1 + 1 = 5<br>4Al + 3O<sub>2</sub> → 2Al<sub>2</sub>O<sub>3</sub> (қосылу): 4 + 3 + 2 = 9<br>CuSO<sub>4</sub> + 2NaOH → Cu(OH)<sub>2</sub> + Na<sub>2</sub>SO<sub>4</sub> (алмасу): 1 + 2 + 1 + 1 = 5<br>Код: 6595',
+ concl:'6595 — сейфтің нақты коды, ол 19:21-де бірінші талпыныстан енгізілген. Кодты күнделіктен оқуға бірнеше адамның мүмкіндігі болған, бірақ оны теңдеулерге айналдырып, бірінші реттен дұрыс шешу үшін химияны жақсы білу керек. Сейф 19:21-де ашылған: № 1 жазбадағы уақытпен сәйкес.'}},
+{tag:'Сараптама № 4',t:'Сейф астындағы металл сынығы',body:`
+<p>Сынықтың бір ұшы қайшымен кесілген, екінші ұшы жыртылған. Сарапшы оны үш бөлікке бөліп тексерді:</p>
+<ul><li>бірінші бөлік ауада қыздырғанда көз қаратпайтын ақ жалынмен жанып, ақ ұнтаққа айналды;</li>
+<li>екінші бөлік тұз қышқылында тез еріп, газ бөлінді;</li>
+<li>үшінші бөлік мыс(II) сульфаты ерітіндісінде қызыл-қоңыр қабатпен жабылды.</li></ul>
+<p>Содан кейін сарапшы дәл осындай екінші сынықты (табылғанымен бірдей) оттекте толық жағып, <b>0,080 г</b> ақ ұнтақ алды. Мектепке берілген олимпиада жиынтығындағы осы металл таспасының 1 см-інің массасы <b>0,012 г</b>.</p>`,
+ task:{q:'Табылған сынықтың ұзындығы неше см?',kind:'num',ans:4,tol:0.1,unit:'см',
+ hint:'Алдымен металды анықта (анықтамалықтағы белсенділік қатарына қара). Ақ ұнтақ — сол металдың оксиді. Оксидтің зат мөлшері металдың зат мөлшеріне тең.',
+ sol:'Металл: Mg (сутекті ығыстырады, мысты ығыстырады, ақ жалынмен жанады)<br>2Mg + O<sub>2</sub> → 2MgO<br>n(MgO) = 0,080 / 40 = 0,002 моль = n(Mg)<br>m(Mg) = 0,002 · 24 = 0,048 г<br>l = 0,048 / 0,012 = 4 см',
+ concl:'Жиынтықтан 4 см магний кесілген. Тінту хаттамасында Тимурдың таспасынан 4 см, Аружанның таспасынан 5 см жетіспейді; Аружан 5 см-ді сабақта жаққанын мұғалім растайды. Зертхана орамы толық. Сынық Тимурдың жиынтығынан.'}},
+{tag:'Сараптама № 5',t:'Реактив журналы: мырыш',body:`
+<div class="tw"><table><tr><th>Уақыт</th><th>Жазба</th><th>Қол қойған</th></tr>
+<tr><td class="n">Жұма, 12:00</td><td>«Мырыш түйіршіктері — 97,5 г.»</td><td>А. Серікұлы</td></tr>
+<tr><td class="n">Жұма, 14:00</td><td>«10-сынып практикалық жұмысы: 25 оқушыға 1,3 г-нан берілді.»</td><td>Д. Қайратұлы</td></tr>
+<tr><td class="n">Жұма, 18:30</td><td>«Мырыш түйіршіктері — 65 г. Реактив шкафы жабылды.»</td><td>А. Серікұлы</td></tr>
+<tr><td class="n">Сенбі, 08:30</td><td>«Мырыш түйіршіктері — 45,5 г.»</td><td>Д. Қайратұлы</td></tr></table></div>
+<p>Кипп аппаратында мырыш тұз қышқылымен толық әрекеттескен:</p>
+<div class="eq">Zn + 2HCl → ZnCl<sub>2</sub> + H<sub>2</sub>↑</div>`,
+ task:{q:'Жұма 18:30-дан кейін неше литр сутек (қ.ж.) алынған?',kind:'num',ans:6.72,tol:0.05,unit:'л',
+ hint:'Күндізгі практикалық жұмысқа кеткен мырышты бөлек есепте: ол 18:30-дағы жазбаға дейін жұмсалған. Түнгі шығынды ғана ал.',
+ sol:'Күндіз: 25 · 1,3 = 32,5 г; 97,5 − 32,5 = 65 г (18:30-дағы жазбамен сәйкес)<br>Түнде: m(Zn) = 65 − 45,5 = 19,5 г<br>n(Zn) = 19,5 / 65 = 0,3 моль = n(H<sub>2</sub>)<br>V(H<sub>2</sub>) = 0,3 · 22,4 = 6,72 л; m(H<sub>2</sub>) = 0,6 г<br>Жауап 9,8 л болса, күндізгі мырыш та қосылып кеткен',
+ concl:'18:30-дан кейін жабық реактив шкафынан 19,5 г мырыш алынған. Шкафтың кілті тек Асқар мен Диас ағайда. Аружан 18:50-де Кипп аппаратын дайын күйде көрген: оны 18:30–18:50 аралығында кілт иесі дайындаған. Диас ағай 18:30-дан бастап жиналыста.'}},
+{tag:'Сараптама № 6',t:'Конверт мөріндегі күйік',body:`
+<p>Мөр жоғары температуралы жалынмен жұмсартылған. Шыны түтіктің ұшындағы күйік сутек жалынына тән. Сарапшы есебі бойынша мөрге жұмсалған сутектің массасы <b>0,6 г</b>, ол толық жанған.</p>
+<div class="eq">2H<sub>2</sub> + O<sub>2</sub> = 2H<sub>2</sub>O + 572 кДж</div>
+<p>Мұндай түтіктің жалыны минутына <b>5,72 кДж</b> жылу береді. Жалын сутектің тазалығы тексерілгеннен кейін бірден тұтатылған және сөнгенше үзілмеген. Тазалықты тексеру уақытын жауап алу хаттамаларынан ізде.</p>`,
+ task:{q:'Жалын сағат нешеде сөнген? (сағ:мин)',kind:'time',ans:'1940',unit:'',
+ hint:'572 кДж сутектің неше моліне жазылған? Тазалықты тексергенде сутек қалай дыбыс береді, оны кім естіді?',
+ sol:'n(H<sub>2</sub>) = 0,6 / 2 = 0,3 моль<br>2 моль — 572 кДж → 0,3 моль — 0,3 · 572 / 2 = 85,8 кДж<br>t = 85,8 / 5,72 = 15 мин<br>«Пах» 19:25-те (Бекболат ата) → 19:25 + 15 мин = 19:40<br>Жауап 19:55 болса, 572 кДж бір мольге жазылған деп есептелген',
+ concl:'Кабинетте кемінде 19:20-дан 19:40-қа дейін адам болған. Осы 20 минут бойы басқа жерде екені расталған адам ақталады. 19:40-тан кейін бірнеше минут ішінде ғимараттан кім шыққанын журналдардан қара.'}},
+{tag:'Сараптама № 7',t:'Аузы төмен сынауық',body:`
+<p>Кипп аппаратының жанынан аузы төмен қаратылып штативке бекітілген сынауық табылды. Күзетші 19:25 шамасында екінші қабаттан қысқа, баяу дыбыс естіген. Сарапшы төрт тұжырым жазып, оның бір бөлігін сызып тастаған:</p>
+<ol style="list-style:upper-roman">
+<li>Сынауыққа сутек жиналған, сондықтан оның аузы төмен қаратылған.</li>
+<li>Таза сутегі бар сынауықты жалынға апарғанда баяу «пах» деген дыбыс шығады.</li>
+<li>Сутек ауадан ауыр, сондықтан сынауық төңкерілген.</li>
+<li>Мырыш пен тұз қышқылынан сутек алу — орынбасу реакциясы.</li></ol>`,
+ task:{q:'Қай тұжырымдар дұрыс?',kind:'opt',opts:['I, III, IV','I, II, IV','II, III, IV','I, II','III, IV'],ans:1,
+ hint:'Сутек ауадан неше есе жеңіл? Таза сутек жанғанда қандай дыбыс шығады? Реакция түрін анықтамалықтан тексер.',
+ sol:'I — дұрыс: сутек ауадан 14,5 есе жеңіл<br>II — дұрыс: таза сутек баяу «пах» етіп жанады<br>III — қате: сутек ауадан жеңіл<br>IV — дұрыс: Zn + 2HCl → ZnCl<sub>2</sub> + H<sub>2</sub>↑, жай зат күрделі заттағы сутектің орнын басады<br>Жауап: I, II, IV',
+ concl:'19:25-те 214-кабинетте сутектің тазалығы тексерілген: бұл № 6 сараптамадағы жалынның басталған уақыты. Сутекті жинап, тазалығын тексеру тәжірибесін білетін адам жасаған.'}},
+{tag:'Журнал',t:'Турникет: оқушы және қызметкер карталары',body:`
+<p>Кіреберістегі турникет картаның нөмірін ғана тіркейді. Карта иелері № 14 құжатта.</p>
+<div class="tw"><table><tr><th>Уақыт</th><th>Карта</th><th>Бағыт</th></tr>
+<tr><td class="n">17:55</td><td class="n">№ 1102</td><td>кірді</td></tr>
+<tr><td class="n">18:00</td><td class="n">№ 0007</td><td>кірді</td></tr>
+<tr><td class="n">18:02</td><td class="n">№ 1047</td><td>шықты</td></tr>
+<tr><td class="n">18:40</td><td class="n">№ 1088</td><td>шықты</td></tr>
+<tr><td class="n">19:10</td><td class="n">№ 1047</td><td>кірді</td></tr>
+<tr><td class="n">19:15</td><td class="n">№ 1102</td><td>шықты</td></tr>
+<tr><td class="n">19:42</td><td class="n">№ 1047</td><td>шықты</td></tr>
+<tr><td class="n">20:05</td><td class="n">№ 0003</td><td>шықты</td></tr>
+<tr><td class="n">20:05</td><td class="n">№ 1063</td><td>шықты</td></tr>
+<tr><td class="n">20:15</td><td class="n">№ 0011</td><td>шықты</td></tr></table></div>
+<p>Кіреберістегі камераның бейнесі бұлыңғыр: 19:10 пен 19:42-де капюшон киген бала көрінеді, беті көрінбейді.</p>`},
+{tag:'Журнал',t:'Артқы есік пен аула',body:`
+<h3>Артқы есіктің электронды құлпы</h3>
+<div class="tw"><table><tr><th>Уақыт</th><th>Карта</th></tr>
+<tr><td class="n">18:31</td><td class="n">№ 0005</td></tr>
+<tr><td class="n">18:50</td><td class="n">№ 0007</td></tr>
+<tr><td class="n">18:53</td><td class="n">№ 0007</td></tr>
+<tr><td class="n">19:44</td><td class="n">№ 0005</td></tr></table></div>
+<p>Құлып есіктің қай бағытта ашылғанын тіркемейді. Артқы есіктің камерасы бір аптадан бері бұзық.</p>
+<h3>Аула камерасы: көліктер</h3>
+<div class="tw"><table><tr><th>Уақыт</th><th>Нөмір</th><th>Оқиға</th></tr>
+<tr><td class="n">17:20</td><td class="n">512 KZA 07</td><td>ауладан шықты</td></tr>
+<tr><td class="n">19:46</td><td class="n">247 ABC 07</td><td>ауладан шықты</td></tr>
+<tr><td class="n">20:07</td><td class="n">088 BHT 07</td><td>ауладан шықты</td></tr></table></div>`},
+{tag:'Журнал',t:'Ішкі камералар: жұма',body:`
+<ul>
+<li>105-кабинет: 18:30–19:45 ата-аналар жиналысы. Жүргізуші Диас Қайратұлы 19:15-те шығып, 19:18-де оралады. Хаттамада 22 ата-ананың қолы бар.</li>
+<li>Кіреберіс посты: Бекболат ата 18:45–19:00 аралығында жоқ, 19:00–20:00 орнында отыр.</li>
+<li>Үшінші қабат дәлізі: Сәуле апай 19:00–19:40 еден жуып жүр. 19:24–19:27 аралығында кадрда жоқ (дәліздің соңындағы бөлмеге кірген).</li>
+<li>Бірінші қабат, мұғалімдер бөлмесінің алды: 19:16-да Диас Қайратұлы кіріп, 19:17-де шығады.</li>
+<li>Екінші қабат пен артқы есіктің камералары бұзық. Кітапханада камера жоқ.</li></ul>
+<p>Мектептегі баспалдақпен бірінші қабаттан екінші қабатқа шамамен 1 минутта жетуге болады.</p>`},
+{tag:'Сараптама',t:'Қол жағындылары',body:`
+<p>Сенбі күні алты адамның қолынан жағынды алынды.</p>
+<div class="tw"><table><tr><th>Кім</th><th>Табылған зат</th></tr>
+<tr><td>Диас Қайратұлы</td><td>мыс(II) сульфаты, кальций хлориді</td></tr>
+<tr><td>Асқар Серікұлы</td><td>кальций хлориді</td></tr>
+<tr><td>Бекболат ата</td><td>калий хлориді</td></tr>
+<tr><td>Сәуле апай</td><td>хлорлы әк</td></tr>
+<tr><td>Тимур Ерланұлы</td><td>табылған жоқ</td></tr>
+<tr><td>Аружан Сапарқызы</td><td>натрий хлориді, магний оксиді</td></tr></table></div>
+<p>Сарапшы: қолғаппен жұмыс істеген адамның қолында із қалмайды.</p>`},
+{tag:'Хаттама',t:'Тінту хаттамасы',body:`
+<div class="tw"><table><tr><th>Кім / қайда</th><th>Не табылды</th></tr>
+<tr><td>Диас Қайратұлы</td><td>214-кабинет пен реактив шкафының кілттері, дәптерлер</td></tr>
+<tr><td>Асқар Серікұлы</td><td>214-кабинет пен реактив шкафының кілттері, қызметкер картасы, CaCl<sub>2</sub> салынған кептіргіш түтіктер, резеңке қолғап</td></tr>
+<tr><td>Бекболат ата</td><td>кіреберіс кілттері, қызметкер картасы, калий хлориді тыңайтқышының пакеті</td></tr>
+<tr><td>Сәуле апай</td><td>шүберек, хлорлы әк, резеңке қолғап</td></tr>
+<tr><td>Тимур Ерланұлы</td><td>олимпиада жиынтығы: магний таспасы 26 см (жиынтықта 30 см); мақта қолғап; оқушы картасы</td></tr>
+<tr><td>Аружан Сапарқызы</td><td>олимпиада жиынтығы: магний таспасы 25 см (жиынтықта 30 см); оқушы картасы</td></tr>
+<tr><td>Зертхана</td><td>магний орамы: журнал бойынша 200 см, өлшенгені 200 см</td></tr></table></div>`},
+{tag:'Тізім',t:'Мектеп тізілімдері',body:`
+<h3>Карталар</h3>
+<div class="tw"><table><tr><th>Карта</th><th>Иесі</th></tr>
+<tr><td class="n">№ 0003</td><td>Диас Қайратұлы</td></tr>
+<tr><td class="n">№ 0005</td><td>Асқар Серікұлы</td></tr>
+<tr><td class="n">№ 0007</td><td>Бекболат ата</td></tr>
+<tr><td class="n">№ 0011</td><td>Сәуле апай</td></tr>
+<tr><td class="n">№ 1047</td><td>Тимур Ерланұлы, 10 «А»</td></tr>
+<tr><td class="n">№ 1063</td><td>Аружан Сапарқызы, 9 «Б»</td></tr>
+<tr><td class="n">№ 1088</td><td>Мадина Оразқызы, 10 «А»</td></tr>
+<tr><td class="n">№ 1102</td><td>Данияр Бекұлы, 11 «В»</td></tr></table></div>
+<h3>Қызметкерлер автотұрағы</h3>
+<div class="tw"><table><tr><th>Нөмір</th><th>Иесі</th></tr>
+<tr><td class="n">088 BHT 07</td><td>Диас Қайратұлы</td></tr>
+<tr><td class="n">247 ABC 07</td><td>Асқар Серікұлы</td></tr>
+<tr><td class="n">512 KZA 07</td><td>директордың орынбасары</td></tr></table></div>
+<h3>Оқушылардың төтенше байланысы</h3>
+<div class="tw"><table><tr><th>Оқушы</th><th>Байланыс</th></tr>
+<tr><td>Тимур Ерланұлы</td><td>анасы; анасы түнгі ауысымда болса — нағашысы А. Серікұлы</td></tr>
+<tr><td>Аружан Сапарқызы</td><td>әкесі</td></tr>
+<tr><td>Данияр Бекұлы</td><td>анасы</td></tr></table></div>`},
+{tag:'Журнал',t:'Кітапхана журналы: жұма',body:`
+<div class="tw"><table><tr><th>Уақыт</th><th>Оқиға</th></tr>
+<tr><td class="n">19:05</td><td>Аружан Сапарқызы кірді</td></tr>
+<tr><td class="n">19:30</td><td>Аружан «Химиядан олимпиадалық есептер» кітабын алды</td></tr>
+<tr><td class="n">19:52</td><td>Аружан кітапты қайтарды</td></tr>
+<tr><td class="n">20:00</td><td>Аружан шықты, кітапхана жабылды</td></tr></table></div>
+<p>Кітапханашының жазбасы: «Аружан бүкіл уақыт көз алдымда отырды. Кешке кітапханаға басқа оқушы кірген жоқ.»</p>`},
+{tag:'Тізім',t:'Кілттер мен код',body:`
+<div class="tw"><table><tr><th>Нысан</th><th>Кімде</th></tr>
+<tr><td>214-кабинеттің кілті</td><td>Диас Қайратұлы, Асқар Серікұлы, кіреберістегі қалқанда қосалқы кілт</td></tr>
+<tr><td>Реактив шкафы (мырыш, тұз қышқылы)</td><td>Диас Қайратұлы, Асқар Серікұлы</td></tr>
+<tr><td>Сейфтің коды</td><td>өткен айда ауыстырылған, мұғалімнің күнделігінде жазулы</td></tr>
+<tr><td>Артқы есік</td><td>қызметкер карталарымен ашылады</td></tr></table></div>
+<p>Кіреберістегі қалқандағы қосалқы кілт сенбі таңертең орнында тұрды. Қалқан ашық, оны күзетші бақылайды.</p>`},
+{tag:'Сызба',t:'Мектептің қабат сызбасы',body:`
+<figure style="margin:0;overflow-x:auto">${svgPlan}</figure>
+<div class="tw"><table><tr><th>Белгі</th><th>Мағынасы</th></tr>
+<tr><td><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="5" fill="#b3261e"/></svg></td><td>істейтін камера</td></tr>
+<tr><td><svg width="14" height="14" viewBox="0 0 14 14"><g stroke="#b3261e" stroke-width="1.6"><circle cx="7" cy="7" r="5" fill="#fff"/><path d="M3.5 3.5l7 7M10.5 3.5l-7 7"/></g></svg></td><td>бұзық камера</td></tr>
+<tr><td>сары бөлме</td><td>іс құжаттарында аталатын орын</td></tr></table></div>
+<h3>Жүру уақыты (сарапшының өлшеуі)</h3>
+<ul><li>Баспалдақпен бір қабат көтерілу немесе түсу: ≈ 1 мин.</li>
+<li>Дәліздің бір шетінен екінші шетіне: ≈ 1 мин.</li>
+<li>Көрші бөлмелер арасы: 15 секундтан аз.</li></ul>
+<p>«Арт. б.» — артқы баспалдақ, ол бірінші қабатта артқы есікке шығады. Негізгі баспалдақ кіреберістің жанында. Аулаға екі есіктен де шығуға болады. Камералар тек дәліздерді, кіреберісті, постты және 105-кабинетті түсіреді; кітапханада, баспалдақтарда және кабинеттердің ішінде камера жоқ.</p>`}
+];
+const TASKS=DOCS.map((d,i)=>d.task?i:-1).filter(i=>i>=0);
+
+const INT=[
+{id:'gulnar',qa:[
+ ['Жұма кешінде қайда болдыңыз?','18:30-дан 19:45-ке дейін 105-кабинетте ата-аналар жиналысын өткіздім. Ортасында бір рет мұғалімдер бөлмесіне барып, анықтамаларды алып келдім. Одан кейін дәптер тексеріп, 20:05-те кеттім.'],
+ ['Сейф кодын кім біледі?','Кодты өткен айда ауыстырдық. Жаңа кодты күнделігіме жазып қойдым, күнделік мұғалімдер бөлмесінде, үстелімде жатады. Ол бөлмені кім көрмейді дейсіз...'],
+ ['Қолыңызда кальций хлориді табылды.','15:00-де Асқарға кептіргіш түтіктерді толтыруға көмектестім. Одан кейін тұтқаны ұстаған жоқпын, конвертті 17:28-де салдым.'],
+ ['Олимпиадашылардың магний таспасы неге қысқа?','Аружан сабақта 9-сыныптарға магнийдің жануын көрсетті, шамамен 5 см жақты. Тимур туралы білмеймін.'],
+ ['Кешке кабинетте кім жиі қалады?','Олимпиадашылар, лаборант, кейде мен. Тазалықшы да кіріп жинайды.']]},
+{id:'askar',qa:[
+ ['Жұма кешінде қайда болдыңыз?','18:30-да реактивтерді тексеріп, журналға жаздым, шкафты жаптым. 18:31-де артқы есіктен шығып, жаяу үйге кеттім. Көлігім бұзылып, аулада қалған.'],
+ ['Сейф кодын білесіз бе?','Білемін. Бірақ ол мұғалімнің күнделігінде жазулы тұр, мұғалімдер бөлмесінде күнделікті кез келген адам ашып көре алады.'],
+ ['Қолыңызда кальций хлориді табылды.','Түстен кейін кептіргіш түтіктерді толтырдым, Диас Қайратұлы көмектесті.'],
+ ['Резеңке қолғап не үшін?','Лаборантпын ғой, қолғапсыз жұмыс істемеймін.'],
+ ['Оқушылар кешке зертханада қала ма?','Олимпиадашылар қалады. Тимур мен Аружан осы аптада екі рет қалды, мен оларға Кипп аппаратын қолдануды көрсеттім.']]},
+{id:'bekbolat',qa:[
+ ['Жұма кешінде қайда болдыңыз?','18:50-де қоқысты артқы есіктен шығарып тастадым, сосын қабаттарды аралап шықтым. 19:00-ден бастап постта отырдым.'],
+ ['Ерекше дыбыс естідіңіз бе?','19:25 шамасында екінші қабаттан баяу «пах» деген дыбыс шықты. Бір нәрсе құлады ма деп ойладым, басқа дыбыс болмады.'],
+ ['Кешке кім кіріп-шықты?','Турникет тіркейді, мен әр баланы танымаймын. Бір бала капюшон киіп кіріп, кейін жүгіріп шығып кетті. Мұғалімдер мен тазалықшы сегіздерде кетті.'],
+ ['Қосалқы кілтті біреу алды ма?','Қалқан ашық тұрады, бірақ мен постта отырғанда ешкім жақындаған жоқ.'],
+ ['Қолыңыздағы ақ түйіршіктер не?','Калий хлориді, бақшаға тыңайтқыш. Түсте дүкеннен алдым.']]},
+{id:'saule',qa:[
+ ['Жұма кешінде қайда болдыңыз?','19:00-ге дейін екінші қабатты, 19:00–19:40 аралығында үшінші қабатты жудым.'],
+ ['214-кабинеттің жанынан өттіңіз бе?','18:50-де өттім. Кабинеттен бір қыз дәптер алып шықты. Есік ашық, ішінде шам жанып тұрды.'],
+ ['Мұғалімдер бөлмесін жинайсыз ба?','Күнде жинаймын. Диас Қайратұлының күнделігі үстелде жатады, бірақ мен оқымаймын.'],
+ ['Бірдеңе естідіңіз бе?','Шелек сылдырынан ештеңе естімедім. 19:24-те үшінші қабаттағы қойма бөлмеге шүберек алуға кірдім.'],
+ ['Қолыңызда хлорлы әк табылды.','Әжетханаларды сонымен жуамын.']]},
+{id:'timur',qa:[
+ ['Жұма кешінде қайда болдың?','18:02-де шығып, үйге кеттім. Үйде жалғыз болдым, анам түнгі ауысымда.'],
+ ['Олимпиада жиынтығыңды қолдандың ба?','Жоқ, магнийді әлі ашқан да жоқпын.'],
+ ['Кипп аппаратымен жұмыс істей аласың ба?','Иә, осы аптада үйрендік. Аружан да үйренді.'],
+ ['Оқушы картаң кімде?','Өзімде, сөмкемде. Ешкімге берген жоқпын.'],
+ ['Мақта қолғап не үшін?','Күз ғой, суық.']]},
+{id:'aruzhan',qa:[
+ ['Жұма кешінде қайда болдың?','18:50-де 214-ке ұмытып кеткен дәптерімді алуға кірдім. 19:05-тен 20:00-ге дейін кітапханада болдым.'],
+ ['214-те не көрдің?','Ешкім жоқ еді. Есік ашық, шам жанып тұрды. Үстелде Кипп аппараты жиналып тұрды, құмырасына мырыш салынған екен. Біреу тәжірибеге дайындалып жатыр деп ойладым.'],
+ ['Магний таспаңнан неге 5 см жоқ?','Сабақта 9-сыныптарға магнийдің жануын көрсеттім.'],
+ ['Сейф кодын білесің бе?','Жоқ. Мұғалімдер бөлмесіне оқушыларды кіргізбейді.'],
+ ['Тимурмен қарым-қатынасың қандай?','Бәсекелеспіз. Былтыр ол екінші, мен үшінші орын алдым.']]}
+];
+
+const fresh=()=>({view:'intro',doc:0,who:0,ans:{},notes:{},marks:{},memo:'',hints:[],wrongAcc:0,po:'',pt:'',msg:'',start:0,end:0,name:'',solved:false});
+let S=fresh();
+const app=document.getElementById('app'),$=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+const sus=id=>SUS.find(s=>s.id===id);
+const has=i=>S.ans[i]!==undefined&&S.ans[i]!=='';
+const right=i=>{const t=DOCS[i].task;if(!has(i))return false;
+  if(t.kind==='opt')return +S.ans[i]===t.ans;
+  if(t.kind==='time')return String(S.ans[i]).replace(/\D/g,'').replace(/^0/,'')===t.ans;
+  const v=parseFloat(String(S.ans[i]).replace(',','.').replace(/\s/g,''));return !isNaN(v)&&Math.abs(v-t.ans)<=t.tol};
+const NT=TASKS.length;
+const nAns=()=>TASKS.filter(has).length,nRight=()=>TASKS.filter(right).length;
+const shown=i=>{const t=DOCS[i].task;return t.kind==='opt'?t.opts[S.ans[i]]:esc(S.ans[i])+(t.unit?' '+t.unit:'')};
+const score=()=>Math.max(0,nRight()*10+(S.solved?40:0)-S.wrongAcc*10-S.hints.length*5);
+
+function fmt(sec){const s=Math.abs(sec);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function tick(){
+  const t=$('timer');
+  if(!S.start){t.textContent=fmt(LIMIT);return}
+  const el=Math.floor(((S.end||Date.now())-S.start)/1000),left=LIMIT-el;
+  t.textContent=left>=0?fmt(left):'+'+fmt(left);t.className=left<0?'late':'';
+}
+setInterval(tick,1000);
+
+function vIntro(){
+  return '<h1>«Олимпиада конверті» ісі</h1>'+
+  '<p class="lead">Облыстық химия олимпиадасының тапсырмалары мен жауаптары салынған мөрлі конверт түнде сейфтен ашылған. Біреу жауаптарды суретке түсіріп, конвертті қайта жапқан. Іс саған тапсырылды. Папкада хаттамалар, сараптамалар, журналдар және алты адамнан алынған жауаптар бар.</p>'+
+  '<div class="sheet"><div class="dochead"><span class="tag">ТЕРГЕУШІГЕ ТАПСЫРМА</span><span class="stamp">ІС № 214-Х</span></div><ul>'+
+  '<li>Екі сұраққа жауап тап: сейфті кім ашты және жауаптарды кім суретке түсірді. Бұл бір адам да, екі адам да болуы мүмкін.</li>'+
+  '<li>Жеті сараптамада есеп бар. Жауабыңның дұрыс-бұрысын ешкім айтпайды, қате есеп қате адамға апарады.</li>'+
+  '<li>Қалған құжаттарда есеп жоқ, бірақ есептің нәтижесін солармен салыстырмай қорытынды шықпайды.</li>'+
+  '<li>Жауап бергендердің бәрі шындықты айтып тұрған жоқ. Сөзді құжатпен және есеппен тексер.</li>'+
+  '<li>Кейбір іздер әдейі басқа адамды нұсқайды. Әр адамды кемінде екі құжатпен тексер.</li>'+'<li>Есептің жауап нұсқаларында жиі кездесетін қате жауаптар да бар.</li>'+
+  '<li>Материалдарды кез келген ретпен оқы, кез келген уақытта қайта орал. Жеті есептің бәріне жауап жазған соң айыптай аласың.</li>'+'<li>Шешім тек жеті есептің бәрі дұрыс шығарылып, айыптылар дұрыс көрсетілгенде ашылады.</li>'+
+  '<li>Қате айыптау 10 ұпай, әр кеңес 5 ұпай алады. Уақыт: 45 минут.</li></ul>'+
+  '<label for="nm"><h3>Тергеушінің аты-жөні немесе топ атауы</h3></label><input type="text" id="nm" data-k="name" style="width:100%;max-width:320px" autocomplete="off" value="'+esc(S.name)+'">'+
+  '<button class="go big" data-act="start" type="button">Папканы ашу</button></div>';
+}
+function vDocs(){
+  const flag=(S.errTasks||0)>=3;
+  return '<div class="group">'+DOCS.map((d,i)=>'<button class="item" type="button" data-doc="'+i+'"><span class="no">'+String(i+1).padStart(2,'0')+'</span><span class="tx"><small>'+d.tag+'</small><b>'+d.t+'</b></span>'+
+   (d.task?(has(i)?(flag&&!right(i)?'<span class="pill bad">қайта тексер</span>':'<span class="pill">'+shown(i)+'</span>'):'<span class="pill none">есеп бар</span>'):'')+'</button>').join('')+'</div>'+
+   '<p class="hintline">'+DOCS.length+' құжат. Көк сиямен жазылғаны сенің жауабың.</p>';
+}
+function vDoc(){
+  const i=S.doc,d=DOCS[i],t=d.task;
+  let h='<div class="row"><button class="ghost" data-go="docs" type="button">← Материалдар</button><button class="ghost" data-go="ints" type="button">Жауап алу</button></div>'+
+   '<div class="sheet"><div class="dochead"><div><div class="tag">'+d.tag.toUpperCase()+'</div><h2>'+d.t+'</h2></div><span class="stamp">ІС № 214-Х · '+String(i+1).padStart(2,'0')+'</span></div>'+d.body;
+  if(t){
+    h+='<div class="task"><h3>Тергеушінің есебі</h3><p class="q">'+t.q+'</p>';
+    if(t.kind!=='opt')h+='<div class="numrow"><input class="num" type="text" id="ans" data-k="ans" inputmode="'+(t.kind==='time'?'text':'decimal')+'" placeholder="'+(t.kind==='time'?'00:00':'')+'" autocomplete="off" aria-label="Жауап" value="'+esc(S.ans[i])+'"><span>'+t.unit+'</span></div>';
+    else h+='<div class="opts">'+t.opts.map((o,j)=>'<button type="button" data-a="'+j+'" aria-pressed="'+(has(i)&&+S.ans[i]===j)+'">'+o+'</button>').join('')+'</div>';
+    h+=S.hints.includes(i)?'<div class="fb tip"><b>Кеңес</b>'+t.hint+'</div>':'<button class="ghost" data-act="hint" type="button" style="align-self:flex-start">Кеңес алу (−5 ұпай)</button>';
+    h+='</div>';
+  }
+  h+='<label for="note"><h3>Менің жазбам</h3></label><textarea id="note" data-k="note">'+esc(S.notes['d'+i])+'</textarea>'+
+   '<div class="row"><button class="ghost" data-doc="'+((i+DOCS.length-1)%DOCS.length)+'" type="button">← Алдыңғы</button><button class="ghost" data-doc="'+((i+1)%DOCS.length)+'" type="button">Келесі →</button></div></div>';
+  return h;
+}
+function vInts(){
+  return '<div class="group">'+INT.map((p,i)=>{const s=sus(p.id);return '<button class="item" type="button" data-who="'+i+'"><span class="no">'+String(i+1).padStart(2,'0')+'</span><span class="tx"><small>Жауап алу хаттамасы</small><b>'+s.full+', '+s.role+'</b></span></button>'}).join('')+'</div>'+
+   '<p class="hintline">Алты адамнан сенбі күні жеке-жеке жауап алынды.</p>';
+}
+function vInt(){
+  const i=S.who,p=INT[i],s=sus(p.id);
+  return '<div class="row"><button class="ghost" data-go="ints" type="button">← Жауап алу</button><button class="ghost" data-go="docs" type="button">Материалдар</button></div>'+
+   '<div class="sheet typed"><div class="dochead"><div><div class="tag">ЖАУАП АЛУ ХАТТАМАСЫ</div><h2>'+s.full+'</h2><div>'+s.role+'</div></div><span class="stamp">СЕНБІ</span></div>'+
+   '<div class="qa">'+p.qa.map(x=>'<p class="t">Тергеуші: '+x[0]+'</p><p class="a">'+s.name+': '+x[1]+'</p>').join('')+'</div>'+
+   '<p class="t" style="color:var(--muted)">Хаттаманы оқып шықтым, сөзімнен дұрыс жазылған. Қолы: '+s.full+'</p>'+
+   '<label for="note"><h3>Менің жазбам</h3></label><textarea id="note" data-k="note">'+esc(S.notes['i'+i])+'</textarea>'+
+   '<div class="row"><button class="ghost" data-who="'+((i+5)%6)+'" type="button">← Алдыңғы</button><button class="ghost" data-who="'+((i+1)%6)+'" type="button">Келесі →</button></div></div>';
+}
+function vNote(){
+  return '<p class="hintline">Бұл сенің дәптерің. Белгілерді ойын тексермейді.</p>'+
+  SUS.map(s=>{const m=S.marks[s.id]||'';
+   return '<div class="sheet who '+(m==='out'?'out':m==='hot'?'hot':'')+'"><div><h2>'+s.full+'</h2><div class="n" style="font-size:13px;color:var(--muted)">'+s.role+'</div></div>'+
+   '<div class="seg" role="group" aria-label="Белгі">'+[['','Белгісіз'],['hot','Күдікті'],['out','Ақталды']].map(o=>'<button type="button" data-mark="'+s.id+'" data-v="'+o[0]+'" aria-pressed="'+(m===o[0])+'">'+o[1]+'</button>').join('')+'</div>'+
+   '<textarea data-k="pn" data-id="'+s.id+'" aria-label="'+s.name+' туралы жазба" style="min-height:56px">'+esc(S.notes['p'+s.id])+'</textarea></div>'}).join('')+
+  '<div class="sheet"><label for="memo"><h3>Болжам</h3></label><textarea id="memo" data-k="memo" style="min-height:140px">'+esc(S.memo)+'</textarea></div>';
+}
+function pickList(role,cur){
+  return '<div class="opts">'+SUS.map(s=>'<button type="button" data-pick="'+role+'" data-id="'+s.id+'" aria-pressed="'+(cur===s.id)+'">'+s.full+', '+s.role+'</button>').join('')+'</div>';
+}
+function vAcc(){
+  const n=nAns();
+  let h='<div class="sheet"><div class="dochead"><div><div class="tag">АЙЫПТАУ ҚОРЫТЫНДЫСЫ</div><h2>Кім ашты, кім суретке түсірді?</h2></div><span class="stamp">ІС № 214-Х</span></div>';
+  if(n<NT)h+='<p>Айыптау үшін жеті есептің бәріне жауап жаз. Қазір жазылғаны: <b>'+n+' / '+NT+'</b>.</p><button class="go" data-go="docs" type="button" style="align-self:flex-start">Материалдарға оралу</button>';
+  else h+='<h3>Сейфті ашқан</h3>'+pickList('o',S.po)+'<h3>Жауаптарды суретке түсірген</h3>'+pickList('t',S.pt)+
+    '<button class="go" data-act="accuse" type="button" '+(S.po&&S.pt?'':'disabled')+' style="align-self:flex-start">Айыптауды растау</button>';
+  if(S.msg)h+='<div class="fb" role="status"><b>Айыптау дәлелденбеді · −10 ұпай</b>'+S.msg+'</div>';
+  return h+'</div>';
+}
+const fin=(name,full,role,qa)=>'<div class="sheet typed"><div class="dochead"><div><div class="tag">СОҢҒЫ ЖАУАП АЛУ ХАТТАМАСЫ</div><h2>'+full+'</h2><div>'+role+'</div></div><span class="stamp">МОЙЫНДАУ</span></div><div class="qa">'+
+  qa.map(x=>'<p class="t">Тергеуші: '+x[0]+'</p><p class="a">'+name+': '+x[1]+'</p>').join('')+'</div></div>';
+const FINAL='<p class="hintline">Айғақтар көрсетілген соң екеуінен қайта жауап алынды.</p>'+
+fin('Тимур','Тимур Ерланұлы','10-сынып оқушысы',[
+ ['Сенің картаң 19:10-да кіріп, 19:42-де шыққан. Сейф астындағы 4 см магний сенің жиынтығыңнан кесілген. Не айтасың?','Мойындаймын. Жауаптарды мен суретке түсірдім, 19:31-де.'],
+ ['Не үшін?','Олимпиадада жеңсем, университетке грант беріледі. Былтыр екінші орын алдым, бұл жолы міндетті түрде бірінші болғым келді.'],
+ ['Кабинетте не істедің?','Ағам сейфті ашты. Мен Кипп аппаратында сутек алып, тазалығын тексердім, сосын түтіктің жалынымен мөрді жұмсартып, конвертті аштым. Суретке түсірген соң мөрді қайта жабыстырдым. Жалынды тұтату үшін магний кескенмін, сынығы түсіп қалғанын байқамаппын.'],
+ ['Ағаң кім?','Асқар Серікұлы, анамның інісі.']])+
+fin('Асқар','Асқар Серікұлы','лаборант',[
+ ['Көлігіңіз 19:46-да ауладан шыққан, картаңыз 19:44-те артқы есікті ашқан. Сіз «18:31-де жаяу кеттім» дедіңіз.','Өтірік айттым. Мен кеткен жоқпын. Сейфті мен аштым.'],
+ ['Бәрі қалай ұйымдастырылды?','18:30-да журналға жазып, шкафты жаптым да, қайта аштым. 19,5 г мырышты Кипп аппаратына салып, есікті ашық қалдырдым. 18:31-де көліктен қолғабымды алып келдім. Жиеніме уақытты иондармен жазып бердім.'],
+ ['Код қайдан?','Кодты бұрыннан білемін. Тимур ұмытып қалмасын деп, оны теңдеулерге айналдырып бердім.'],
+ ['Неге?','Апамның жалғыз ұлы. Грант алса, оқуы тегін болады деп ойладым.']])+
+'<div class="sheet"><p>Олимпиада тапсырмалары жаңа нұсқамен ауыстырылды. Тимур олимпиадаға жіберілмеді, Асқар Серікұлына қатысты тәртіптік іс қозғалды.</p></div>';
+function vEnd(){
+  const el=Math.floor((S.end-S.start)/1000),sc=score();
+  const rank=!S.solved?'Іс басқа тергеушіге берілді':sc>=100?'Аса маңызды істер тергеушісі':sc>=80?'Аға тергеуші':sc>=60?'Тергеуші':'Тергеуші көмекшісі';
+  return '<h1>Іс аяқталды</h1><div class="sheet"><span class="verdict">АШҚАН: АСҚАР · СУРЕТКЕ ТҮСІРГЕН: ТИМУР</span>'+
+   '<p>'+(S.name?'<b>'+esc(S.name)+'</b>: ':'')+'<b>'+rank+'</b>'+(el>LIMIT?'. Уақыттан '+fmt(el-LIMIT)+' асып кетті.':'.')+'</p>'+
+   '<div class="res"><div><small>Ұпай</small><span>'+sc+'</span></div><div><small>Уақыт</small><span>'+fmt(el)+'</span></div><div><small>Дұрыс есеп</small><span>'+nRight()+'/'+NT+'</span></div></div>'+
+   '<p class="n" style="font-size:13px;color:var(--muted)">Қате айыптау: '+S.wrongAcc+' · алынған кеңес: '+S.hints.length+'</p></div>'+FINAL+
+   TASKS.map(i=>{const d=DOCS[i];return '<div class="sheet"><div class="dochead"><div><div class="tag">'+d.tag.toUpperCase()+'</div><h2>'+d.t+'</h2></div><span class="stamp" style="color:'+(right(i)?'var(--ok)':'var(--stamp)')+';border-color:currentColor">'+(right(i)?'ДҰРЫС':'ҚАТЕ')+'</span></div>'+
+    '<p>Сенің жауабың: <span class="pill">'+(has(i)?shown(i):'жоқ')+'</span></p><div class="sol">'+d.task.sol+'</div><div class="fb ok"><b>Қорытынды</b>'+d.task.concl+'</div></div>'}).join('')+
+   '<div class="sheet"><h3>Шын мәнінде не болды</h3>'+
+   '<p><b>Асқар</b> 18:30-да журналға «65 г» деп жазып, реактив шкафынан 19,5 г мырыш алды. Кипп аппаратын дайындап, кабинетті ашық қалдырды (18:50-де Аружан көрді). 19:21-де 6595 кодымен сейфті ашты: тұтқада кальций хлориді қалды. 19:44-те өз картасымен артқы есіктен шығып, 19:46-да көлігімен кетті. Ол «18:31-де жаяу кеттім, көлігім бұзық» деп өтірік айтты.</p>'+
+   '<p><b>Тимур</b> 19:10-да өз картасымен қайта кірді. 6,72 л сутек алып, 19:25-те тазалығын тексерді. Сутек жалынымен мөрді жұмсартып, 19:31-де жауаптарды суретке түсірді, 19:40-та жалынды сөндірді. Жиынтығынан кескен 4 см магний сейф астына түсіп қалды. 19:42-де шықты. Ол «18:02-де кеттім», «магнийді ашқан да жоқпын» деп өтірік айтты. Қолғап кигендіктен қолында із қалмады.</p>'+
+   '<p>Екеуінің байланысы тек тізілімде көрінеді: анасы түнгі ауысымда болғанда Тимурдың байланысы — нағашысы А. Серікұлы.</p>'+
+   '<h3>Жалған іздер</h3><ul>'+
+   '<li>Диас ағай: кілті, коды, қолында CaCl₂ бар, жиналыстан 3 минутқа шыққан. Бірақ 19:16–19:17 мұғалімдер бөлмесінде, ал кабинетте 20 минут керек.</li>'+
+   '<li>Аружан: 18:50-де кабинетте болған, жиынтығынан магний жетпейді, қолында MgO. Бірақ 5 см-ді сабақта жаққан, 19:05–20:00 кітапханада.</li>'+
+   '<li>Бекболат ата: қолында хлорид, артқы есікті ашқан, қосалқы кілтке қолы жетеді. Бірақ KCl-де Ca жоқ, есікті 18:50-де қоқыс үшін ашқан, 19:00–20:00 постта.</li>'+
+   '<li>Сәуле апай: күнделікке қолы жетеді, хлорлы әкте Ca²⁺ мен Cl⁻ бар, 19:24–19:27 камерада жоқ. Бірақ хлорлы әкте үшінші ион бар, ал 3 минут 20 минутқа жетпейді.</li></ul>'+
+   '<button class="go" data-act="again" type="button" style="align-self:flex-start">Қайта ойнау</button></div>';
+}
+const TAB={docs:'docs',doc:'docs',ints:'ints',int:'ints',note:'note',acc:'acc'};
+function render(){
+  tick();$('cnt').textContent=nAns()+'/'+NT;
+  $('tabs').classList.toggle('on',!!TAB[S.view]);
+  document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current',String(b.dataset.go===TAB[S.view])));
+  app.innerHTML={intro:vIntro,docs:vDocs,doc:vDoc,ints:vInts,int:vInt,note:vNote,acc:vAcc,end:vEnd}[S.view]();
+}
+function go(v){S.view=v;window.scrollTo(0,0);render()}
+
+document.addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||b.disabled||b.closest('#ref')||b.id==='openRef')return;
+  const d=b.dataset;
+  if(d.go)return go(d.go);
+  if(d.doc!==undefined){S.doc=+d.doc;return go('doc')}
+  if(d.who!==undefined){S.who=+d.who;return go('int')}
+  if(d.a!==undefined){S.ans[S.doc]=+d.a;return render()}
+  if(d.mark){S.marks[d.mark]=d.v;return render()}
+  if(d.pick){if(d.pick==='o')S.po=d.id;else S.pt=d.id;return render()}
+  if(d.act==='start'){S.start=Date.now();return go('docs')}
+  if(d.act==='hint'){if(!S.hints.includes(S.doc))S.hints.push(S.doc);return render()}
+  if(d.act==='accuse'){
+    const k=(S.po===OPENER?1:0)+(S.pt===THIEF?1:0),allRight=nRight()===NT;
+    if(allRight&&k===2){S.solved=true;S.end=Date.now();S.msg='';return go('end')}
+    S.wrongAcc++;
+    if(!allRight){
+      S.errTasks=(S.errTasks||0)+1;
+      S.msg='Директор айыптауды қабылдамады: сараптама есептерінің кемінде біреуі қате шығарылған. Барлық есеп дұрыс болмайынша, іс жабылмайды және шешім ашылмайды.'+
+        (S.errTasks>=2?' Сенің '+NT+' есебіңнің '+nRight()+'-і дұрыс.':'')+
+        (S.errTasks>=3?' Қате есептер материалдар тізімінде «қайта тексер» деп белгіленді.':'');
+    }else{
+      S.msg='Есептердің бәрі дұрыс, бірақ айыпталушылар дәлелдерге сәйкес келмейді. Есеп нәтижелерін құжаттармен қайта салыстыр.'+
+        (S.wrongAcc>=3?' Екі рөлдің '+k+'-і дұрыс көрсетілген.':'');
+    }
+    return render();
+  }
+  if(d.act==='again'){const n=S.name;S=fresh();S.name=n;return go('intro')}
+});
+document.addEventListener('input',e=>{
+  const ds=e.target.dataset||{},k=ds.k;if(!k)return;
+  const v=e.target.value;
+  if(k==='ans'){S.ans[S.doc]=v.trim();$('cnt').textContent=nAns()+'/'+NT}
+  else if(k==='note')S.notes[(S.view==='doc'?'d'+S.doc:'i'+S.who)]=v;
+  else if(k==='pn')S.notes['p'+ds.id]=v;
+  else if(k==='memo')S.memo=v;
+  else if(k==='name')S.name=v.trim();
+});
+$('openRef').addEventListener('click',()=>{$('ref').classList.add('open');$('closeRef').focus()});
+$('closeRef').addEventListener('click',()=>$('ref').classList.remove('open'));
+$('ref').addEventListener('click',e=>{if(e.target.id==='ref')$('ref').classList.remove('open')});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('ref').classList.remove('open')});
+
+function boot(d){if(d&&d.view&&d.ans)S=Object.assign(fresh(),d);render()}
+window.claude?.hot?.snapshot?.(()=>S);
+if(window.claude?.hot?.ready)window.claude.hot.ready(boot);else boot(window.claude?.hot?.data??{});
+</script>
+</body>
+</html>
